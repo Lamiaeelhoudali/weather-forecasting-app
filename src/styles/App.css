@@ -1,0 +1,531 @@
+/* ==========================================================================
+   GLOBAL RESET AND FOUNDATIONAL LAYOUT
+   --------------------------------------------------------------------------
+   This section applies a modern CSS reset pattern:
+   - box-sizing: border-box makes width and height calculations predictable
+   - margin/padding reset removes browser inconsistencies
+   - min-height on html/body/root ensures full-screen gradient coverage
+   - overflow-x hidden prevents accidental horizontal scrolling from transforms
+   This creates a stable visual foundation for a premium app interface.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e) !important;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e) !important;
+  transition: background 2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.morning {
+  background: linear-gradient(135deg, #ff9a9e, #fecfef, #ffecd2) !important;
+}
+
+body.afternoon {
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb) !important;
+}
+
+body.evening {
+  background: linear-gradient(135deg, #fa709a, #fee140) !important;
+}
+
+body.night {
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e) !important;
+}
+
+body.weather-Clear {
+  background: linear-gradient(135deg, #f7971e, #ffd200) !important;
+}
+
+body.weather-Rain {
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460) !important;
+}
+
+body.weather-Snow {
+  background: linear-gradient(135deg, #e0eafc, #cfdef3) !important;
+}
+
+body.weather-Thunderstorm {
+  background: linear-gradient(135deg, #141e30, #243b55) !important;
+}
+
+body.weather-Clouds {
+  background: linear-gradient(135deg, #606c88, #3f4c6b) !important;
+}
+
+body.weather-Mist {
+  background: linear-gradient(135deg, #3d7eaa, #ffe47a) !important;
+}
+/* ==========================================================================
+   APP SHELL AND CONTENT CONTAINER
+   --------------------------------------------------------------------------
+   The main application wrapper controls readable line length, centered layout,
+   and stacking above the animated Three.js layer. A constrained max-width
+   creates a polished dashboard feel instead of stretching edge-to-edge.
+   ========================================================================== */
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ==========================================================================
+   PREMIUM TYPOGRAPHY TREATMENT
+   --------------------------------------------------------------------------
+   Strong typography is a major part of visual hierarchy. The large title uses
+   layered text-shadow to create glow and depth against dark gradients, giving
+   the heading a cinematic hero-banner presence.
+   ========================================================================== */
+
+.app-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  text-shadow:
+    0 0 30px rgba(255, 255, 255, 0.3),
+    0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   GLASSMORPHIC INTERACTIVE BUTTON STYLING
+   --------------------------------------------------------------------------
+   This button uses transparency, blur, subtle borders, and elevation changes
+   to match the frosted-glass visual language of the app. Hover movement and
+   shadow reinforce interactivity with a tactile premium feel.
+   ========================================================================== */
+
+.unit-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  padding: 8px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.unit-btn:hover {
+  background: #ffffff;
+  color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.unit-btn:active {
+  transform: translateY(0);
+}
+
+.unit-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   REUSABLE GLASSMORPHISM CARD FOUNDATION
+   --------------------------------------------------------------------------
+   This class creates the premium frosted-glass card effect:
+   - translucent white overlay
+   - heavy blur and saturation
+   - subtle border and inset highlight
+   - soft shadow for separation from background
+   The shimmer pseudo-element adds motion and luxury without overwhelming the UI.
+   ========================================================================== */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   FORECAST CARD HOVER ELEVATION
+   --------------------------------------------------------------------------
+   Micro-interactions such as lift-on-hover make forecast cards feel clickable
+   and alive. The cubic-bezier easing creates a spring-like premium motion.
+   ========================================================================== */
+
+.forecast-day-card {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.forecast-day-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ==========================================================================
+   WEATHER-CONDITION ACCENT BORDERS
+   --------------------------------------------------------------------------
+   These utility classes let cards inherit an accent color based on weather.
+   The slight glow reinforces mood while keeping the design subtle and elegant.
+   ========================================================================== */
+
+.border-clear {
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+.border-rain {
+  border-color: rgba(100, 180, 255, 0.5);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(100, 180, 255, 0.2);
+}
+
+.border-snow {
+  border-color: rgba(200, 240, 255, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(200, 240, 255, 0.18);
+}
+
+.border-thunderstorm {
+  border-color: rgba(180, 100, 255, 0.5);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(180, 100, 255, 0.2);
+}
+
+.border-clouds {
+  border-color: rgba(200, 200, 220, 0.4);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 18px rgba(220, 220, 235, 0.12);
+}
+
+/* ==========================================================================
+   DATA VISUALIZATION MICRO-COMPONENT: HUMIDITY BAR
+   --------------------------------------------------------------------------
+   Rounded progress bars feel softer and more modern. The gradient fill plus
+   glow creates a luminous "water" feel appropriate to humidity data.
+   ========================================================================== */
+
+.humidity-bar {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.humidity-fill {
+  background: linear-gradient(90deg, #7dd3fc, #38bdf8, #0ea5e9);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+/* ==========================================================================
+   HERO TEMPERATURE STYLING
+   --------------------------------------------------------------------------
+   The temperature value is treated as the primary focal element. Large scale,
+   tight letter spacing, glow, and clipped gradient text combine to create a
+   luxurious "display number" aesthetic similar to premium dashboards.
+   ========================================================================== */
+
+.temperature-value {
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.7));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ==========================================================================
+   FLOATING WEATHER ICON EFFECT
+   --------------------------------------------------------------------------
+   Floating animation and glow give the icon a soft ambient motion. This keeps
+   the interface from feeling static and helps draw attention to current
+   conditions without requiring JavaScript-driven animation.
+   ========================================================================== */
+
+.weather-icon {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   FORECAST GRID SYSTEM
+   --------------------------------------------------------------------------
+   CSS Grid provides precise card layout control. The desktop 5-column layout
+   fits a weekly forecast neatly, while breakpoints maintain usability on
+   tablets and phones without changing component markup.
+   ========================================================================== */
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+/* ==========================================================================
+   THREE.JS BACKGROUND LAYER MANAGEMENT
+   --------------------------------------------------------------------------
+   This class ensures the animated WebGL background stays behind content,
+   spans the full viewport, and never blocks user interaction.
+   ========================================================================== */
+
+.three-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   STAGGERED ENTRANCE ANIMATION UTILITIES
+   --------------------------------------------------------------------------
+   These utility classes create sequential reveal timing. Staggering makes the
+   layout feel orchestrated and polished, which is a hallmark of premium UI.
+   ========================================================================== */
+
+.animate-1 {
+  animation: fadeInUp 0.5s ease both;
+}
+
+.animate-2 {
+  animation: fadeInUp 0.5s ease 0.15s both;
+}
+
+.animate-3 {
+  animation: fadeInUp 0.5s ease 0.3s both;
+}
+
+.animate-4 {
+  animation: fadeInUp 0.5s ease 0.45s both;
+}
+
+/* ==========================================================================
+   KEYFRAME ANIMATION LIBRARY
+   --------------------------------------------------------------------------
+   These reusable keyframes power motion throughout the app:
+   - fadeInUp for entrance
+   - shimmer for reflective movement
+   - pulse for subtle emphasis
+   - spin for loaders
+   - countUp as a semantic animation hook
+   - float for icon buoyancy
+   Motion creates energy, rhythm, and perceived quality.
+   ========================================================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 200%;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ==========================================================================
+   SEMANTIC ANIMATION HOOKS
+   --------------------------------------------------------------------------
+   These helper classes provide easy attachment points from JSX. Even though
+   countUp is conceptually named for number reveals, here it simply reuses the
+   fadeInUp motion as requested for a clean, production-friendly implementation.
+   ========================================================================== */
+
+.count-up {
+  animation: fadeInUp 0.6s ease both;
+}
+
+.pulse {
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADAPTATION FOR TABLETS
+   --------------------------------------------------------------------------
+   At tablet widths, spacing and typography scale down to preserve proportion
+   and keep primary information visible without overwhelming the viewport.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .app {
+    padding: 1rem 0.75rem;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .temperature-value {
+    font-size: 3.5rem;
+  }
+
+  .forecast-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE ADAPTATION FOR SMALL PHONES
+   --------------------------------------------------------------------------
+   On smaller screens the interface simplifies further: smaller title,
+   smaller temperature display, tighter button spacing, and a 2-column forecast
+   grid for readability and touch comfort.
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .app {
+    padding: 0.75rem;
+  }
+
+  .app-title {
+    font-size: 1.2rem;
+  }
+
+  .temperature-value {
+    font-size: 2.8rem;
+  }
+
+  .unit-btn {
+    padding: 6px 14px;
+  }
+
+  .forecast-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==========================================================================
+   CUSTOM SCROLLBAR STYLING
+   --------------------------------------------------------------------------
+   Subtle scrollbar styling keeps the browser chrome visually aligned with the
+   translucent interface. A narrow thumb feels refined and unobtrusive.
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
