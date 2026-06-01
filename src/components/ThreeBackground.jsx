@@ -19,7 +19,6 @@ const ThreeBackground = ({
     starField: null,
     starMaterial: null,
     moon: null,
-    sun: null,
   });
   const dynamicObjectsRef = useRef({
     clouds: [],
@@ -66,16 +65,55 @@ const ThreeBackground = ({
     const { timezoneOffset: tz, sunrise: sr, sunset: ss } = solarRef.current;
     const phase = getDayPhase(tz, sr, ss);
     if (!scene) return;
-    if (phase === 'night') { if (textures.nightBackground) scene.background = textures.nightBackground; return; }
-    if (phase === 'sunrise') { scene.background = new THREE.Color(0xffb38a); return; }
-    if (phase === 'sunset') { scene.background = new THREE.Color(0xff8a65); return; }
+
+    if (phase === 'night') {
+      if (textures.nightBackground) scene.background = textures.nightBackground;
+      return;
+    }
+    if (phase === 'sunrise') {
+      if (textures.sunriseBackground) {
+        scene.background = textures.sunriseBackground;
+      } else {
+        scene.background = new THREE.Color(0xffb38a);
+      }
+      return;
+    }
+    if (phase === 'sunset') {
+      if (textures.sunsetBackground) {
+        scene.background = textures.sunsetBackground;
+      } else {
+        scene.background = new THREE.Color(0xff8a65);
+      }
+      return;
+    }
+
     switch (currentWeather) {
-      case 'Rain': case 'Drizzle': scene.background = new THREE.Color(0x4a6b8a); break;
-      case 'Clouds': scene.background = new THREE.Color(0x87ceeb); break;
-      case 'Snow': scene.background = new THREE.Color(0xe8f4f8); break;
-      case 'Thunderstorm': scene.background = new THREE.Color(0x1a1a2e); break;
-      case 'Mist': case 'Fog': case 'Haze': scene.background = new THREE.Color(0x8a9bb0); break;
-      case 'Clear': default: scene.background = new THREE.Color(0x87ceeb); break;
+      case 'Rain':
+      case 'Drizzle':
+        scene.background = new THREE.Color(0x4a6b8a);
+        break;
+      case 'Clouds':
+        scene.background = new THREE.Color(0x87ceeb);
+        break;
+      case 'Snow':
+        scene.background = new THREE.Color(0xe8f4f8);
+        break;
+      case 'Thunderstorm':
+        scene.background = new THREE.Color(0x1a1a2e);
+        break;
+      case 'Mist':
+      case 'Fog':
+      case 'Haze':
+        scene.background = new THREE.Color(0x8a9bb0);
+        break;
+      case 'Clear':
+      default:
+        if (textures.daylightBackground) {
+          scene.background = textures.daylightBackground;
+        } else {
+          scene.background = new THREE.Color(0x87ceeb);
+        }
+        break;
     }
   };
 
@@ -83,10 +121,9 @@ const ThreeBackground = ({
     const { timezoneOffset: tz, sunrise: sr, sunset: ss } = solarRef.current;
     const phase = getDayPhase(tz, sr, ss);
     const isNight = phase === 'night';
-    const { moon, sun, starField } = baseObjectsRef.current;
+    const { moon, starField } = baseObjectsRef.current;
     if (moon) moon.visible = isNight;
     if (starField) starField.visible = isNight;
-    if (sun) sun.visible = !isNight;
   };
 
   const clearDynamicObjects = () => {
@@ -169,7 +206,7 @@ const ThreeBackground = ({
   const rebuildDynamicScene = () => {
     clearDynamicObjects();
     const { weatherMain: currentWeather } = stateRef.current;
-    if (currentWeather === 'Clear' || currentWeather === 'Clouds' || currentWeather === 'Rain' || currentWeather === 'Drizzle') {
+    if (currentWeather === 'Clouds' || currentWeather === 'Rain' || currentWeather === 'Drizzle') {
       for (let i = 0; i < 8; i += 1) {
         createCloud(Math.random() * 24 - 12, Math.random() * 4 + 1, -(Math.random() * 7 + 5), Math.random() * 1 + 0.8);
       }
@@ -212,14 +249,19 @@ const ThreeBackground = ({
       applyBackground();
     });
 
-    textureLoader.load('/2k_sun.jpg', (texture) => {
-      const sunGeometry = pushGeometry(new THREE.SphereGeometry(1.5, 48, 48));
-      const sunMaterial = pushMaterial(new THREE.MeshBasicMaterial({ map: texture }));
-      const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-      sun.position.set(-7, 5, -12);
-      scene.add(sun);
-      baseObjectsRef.current.sun = sun;
-      sun.visible = false;
+    textureLoader.load('/2k_sunrise.jpg', (texture) => {
+      texturesRef.current.sunriseBackground = pushTexture(texture);
+      applyBackground();
+    });
+
+    textureLoader.load('/2k_sunset.jpg', (texture) => {
+      texturesRef.current.sunsetBackground = pushTexture(texture);
+      applyBackground();
+    });
+
+    textureLoader.load('/2k_daylight.jpg', (texture) => {
+      texturesRef.current.daylightBackground = pushTexture(texture);
+      applyBackground();
     });
 
     textureLoader.load('/2k_moon.jpg', (texture) => {
@@ -287,12 +329,11 @@ const ThreeBackground = ({
       if (!rendererInstance || !sceneInstance || !cameraInstance) return;
 
       const time = Date.now() * 0.001;
-      const { moon, sun, starField: stars, starMaterial: sMat } = baseObjectsRef.current;
+      const { moon, starField: stars, starMaterial: sMat } = baseObjectsRef.current;
       const { clouds, weatherParticles } = dynamicObjectsRef.current;
       const { weatherMain: currentWeather } = stateRef.current;
 
       if (moon && moon.visible) moon.rotation.y += 0.0005;
-      if (sun && sun.visible) sun.rotation.y += 0.0005;
 
       if (stars && stars.visible) {
         stars.rotation.y += 0.0003;
@@ -384,7 +425,6 @@ const ThreeBackground = ({
     const isNight = newPhase === 'night';
     if (baseObjectsRef.current.moon) baseObjectsRef.current.moon.visible = isNight;
     if (baseObjectsRef.current.starField) baseObjectsRef.current.starField.visible = isNight;
-    if (baseObjectsRef.current.sun) baseObjectsRef.current.sun.visible = !isNight;
     applyBackground();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timezoneOffset, sunrise, sunset]);
