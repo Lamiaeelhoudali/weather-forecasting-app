@@ -229,6 +229,6 @@ The app is deployed as a static site on Render.
 
 ## Links
 
-**GitHub Repository:** YOUR_GITHUB_URL
+**GitHub Repository:** https://github.com/Lamiaeelhoudali/weather-forecasting-app
 
 **Live Demo:** https://weather-forecasting-app-eish.onrender.com
