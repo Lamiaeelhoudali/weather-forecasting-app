@@ -19,8 +19,14 @@ A major visual feature of the project is the Three.js animated 3D background. It
 
 ---
 
+## Links
+
+**GitHub Repository:** https://github.com/Lamiaeelhoudali/weather-forecasting-app
+
+**Live Demo:** https://weather-forecasting-app-eish.onrender.com
 ## Features
 
+---
 - Real-time current weather with temperature, humidity, wind speed, visibility, sunrise, and sunset
 - Five-day forecast with clickable day cards that expand to show hourly 3-hour interval breakdown
 - Celsius and Fahrenheit unit toggle persisted in `localStorage` so preference survives page refresh
@@ -225,10 +231,3 @@ The app is deployed as a static site on Render.
 
 **Important:** The environment variable `REACT_APP_WEATHER_KEY` must be added in the Render dashboard under Environment so the app can access the OpenWeatherMap API in production.
 
----
-
-## Links
-
-**GitHub Repository:** https://github.com/Lamiaeelhoudali/weather-forecasting-app
-
-**Live Demo:** https://weather-forecasting-app-eish.onrender.com
